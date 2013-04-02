@@ -35,6 +35,7 @@ from social_auth.exceptions import StopPipeline, AuthException, AuthFailed, \
                                    NotAllowedToDisconnect
 from social_auth.backends.utils import build_consumer_oauth_request
 
+import pdb
 
 # OpenID configuration
 OLD_AX_ATTRS = [
@@ -912,8 +913,8 @@ def get_backends(force_load=False):
             if issubclass(backend, SocialAuthBackend):
                 name = backend.name
                 backends = getattr(module, 'BACKENDS', {})
-                if name in backends and backends[name].enabled():
-                    BACKENDSCACHE[name] = backends[name]
+                #if name in backends and backends[name].enabled():
+                BACKENDSCACHE[name] = backends[name]
     return BACKENDSCACHE
 
 
@@ -927,10 +928,10 @@ def get_backend(name, *args, **kwargs):
     try:
         # Cached backend which has previously been discovered.
         return BACKENDSCACHE[name](*args, **kwargs)
-    except KeyError:
+    except:
         # Force a reload of BACKENDS to ensure a missing
         # backend hasn't been missed.
-        get_backends(force_load=True)
+        BACKENDSCACHE = get_backends(force_load=True)
         try:
             return BACKENDSCACHE[name](*args, **kwargs)
         except KeyError:

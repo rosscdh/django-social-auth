@@ -16,6 +16,7 @@ from django.utils import simplejson
 
 from social_auth.backends import BaseOAuth2, OAuthBackend
 from social_auth.utils import dsa_urlopen
+from social_auth.utils import backend_setting
 
 
 ANGEL_SERVER = 'angel.co'
@@ -53,6 +54,12 @@ class AngelAuth(BaseOAuth2):
     SETTINGS_SECRET_NAME = 'ANGEL_CLIENT_SECRET'
     REDIRECT_STATE = False
     STATE_PARAMETER = False
+
+    @classmethod
+    def enabled(cls):
+        """Return backend enabled status by checking basic settings"""
+        return backend_setting(cls, cls.SETTINGS_KEY_NAME) and\
+               backend_setting(cls, cls.SETTINGS_SECRET_NAME)
 
     def user_data(self, access_token, *args, **kwargs):
         """Loads user data from service"""

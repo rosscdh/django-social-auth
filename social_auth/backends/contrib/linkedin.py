@@ -9,6 +9,7 @@ from xml.parsers.expat import ExpatError
 from oauth2 import Token
 
 from social_auth.utils import setting
+from social_auth.utils import backend_setting
 from social_auth.backends import ConsumerBasedOAuth, OAuthBackend
 from social_auth.exceptions import AuthCanceled, AuthUnknownError
 
@@ -51,9 +52,16 @@ class LinkedinAuth(ConsumerBasedOAuth):
     ACCESS_TOKEN_URL = LINKEDIN_ACCESS_TOKEN_URL
     AUTH_BACKEND = LinkedinBackend
     SETTINGS_KEY_NAME = 'LINKEDIN_CONSUMER_KEY'
-    SETTINGS_SECRET_NAME = 'LINKEDIN_CONSUMER_SECRET'
+    SETTINGS_SECRET_NAME = 'LINKEDIN_CONSUMER_SECRET_KEY'
     SCOPE_VAR_NAME = 'LINKEDIN_SCOPE'
     SCOPE_SEPARATOR = '+'
+
+    @classmethod
+    def enabled(cls):
+        """Return backend enabled status by checking basic settings"""
+        assert False
+        return backend_setting(cls, cls.SETTINGS_KEY_NAME) and\
+               backend_setting(cls, cls.SETTINGS_SECRET_NAME)
 
     def user_data(self, access_token, *args, **kwargs):
         """Return user data provided"""

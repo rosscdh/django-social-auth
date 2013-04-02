@@ -22,6 +22,7 @@ from django.conf import settings
 
 from social_auth.utils import dsa_urlopen
 from social_auth.backends import BaseOAuth2, OAuthBackend
+from social_auth.utils import backend_setting
 
 
 # GitHub configuration
@@ -64,6 +65,12 @@ class GithubAuth(BaseOAuth2):
     SCOPE_VAR_NAME = 'GITHUB_EXTENDED_PERMISSIONS'
 
     GITHUB_ORGANIZATION = getattr(settings, 'GITHUB_ORGANIZATION', None)
+
+    @classmethod
+    def enabled(cls):
+        """Return backend enabled status by checking basic settings"""
+        return backend_setting(cls, cls.SETTINGS_KEY_NAME) and\
+               backend_setting(cls, cls.SETTINGS_SECRET_NAME)
 
     def user_data(self, access_token, *args, **kwargs):
         """Loads user data from service"""
